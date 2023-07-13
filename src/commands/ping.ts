@@ -1,26 +1,27 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
-import { ApplicationCommandType, Message } from 'discord.js';
+import { send } from '@sapphire/plugin-editable-commands';
+import { ApplicationCommandType, type Message } from 'discord.js';
 
 @ApplyOptions<Command.Options>({
 	description: 'ping pong'
 })
 export class UserCommand extends Command {
-	// Register Chat Input and Context Menu command
+	// Register slash and context menu command
 	public override registerApplicationCommands(registry: Command.Registry) {
-		// Register Chat Input command
+		// Register slash command
 		registry.registerChatInputCommand({
 			name: this.name,
 			description: this.description
 		});
 
-		// Register Context Menu command available from any message
+		// Register context menu command available from any message
 		registry.registerContextMenuCommand({
 			name: this.name,
 			type: ApplicationCommandType.Message
 		});
 
-		// Register Context Menu command available from any user
+		// Register context menu command available from any user
 		registry.registerContextMenuCommand({
 			name: this.name,
 			type: ApplicationCommandType.User
@@ -29,34 +30,35 @@ export class UserCommand extends Command {
 
 	// Message command
 	public async messageRun(message: Message) {
-		return this.sendPing(message);
-	}
-
-	// Chat Input (slash) command
-	public async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-		return this.sendPing(interaction);
-	}
-
-	// Context Menu command
-	public async contextMenuRun(interaction: Command.ContextMenuCommandInteraction) {
-		return this.sendPing(interaction);
-	}
-
-	private async sendPing(interactionOrMessage: Message | Command.ChatInputCommandInteraction | Command.ContextMenuCommandInteraction) {
-		const pingMessage =
-			interactionOrMessage instanceof Message
-				? await interactionOrMessage.channel.send({ content: 'Ping?' })
-				: await interactionOrMessage.reply({ content: 'Ping?', fetchReply: true });
+		const msg = await send(message, 'Ping?');
 
 		const content = `Pong! Bot Latency ${Math.round(this.container.client.ws.ping)}ms. API Latency ${
-			pingMessage.createdTimestamp - interactionOrMessage.createdTimestamp
+			(msg.editedTimestamp || msg.createdTimestamp) - (message.editedTimestamp || message.createdTimestamp)
 		}ms.`;
 
-		if (interactionOrMessage instanceof Message) {
-			return pingMessage.edit({ content });
-		}
+		return send(message, content);
+	}
+	// slash command
+	public async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
+		const msg = await interaction.reply({ content: 'Ping?', fetchReply: true });
 
-		return interactionOrMessage.editReply({
+		const content = `Pong! Bot Latency ${Math.round(this.container.client.ws.ping)}ms. API Latency ${
+			msg.createdTimestamp - interaction.createdTimestamp
+		}ms.`;
+
+		return await interaction.editReply({
+			content: content
+		});
+	}
+	// context menu command
+	public async contextMenuRun(interaction: Command.ContextMenuCommandInteraction) {
+		const msg = await interaction.reply({ content: 'Ping?', fetchReply: true });
+
+		const content = `Pong! Bot Latency ${Math.round(this.container.client.ws.ping)}ms. API Latency ${
+			msg.createdTimestamp - interaction.createdTimestamp
+		}ms.`;
+
+		return await interaction.editReply({
 			content: content
 		});
 	}
