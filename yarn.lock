@@ -418,10 +418,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^20.4.1":
+"@types/node@npm:*":
   version: 20.4.1
   resolution: "@types/node@npm:20.4.1"
   checksum: 22cbcc792f2eb636fe4188778ed0f32658ab872aa7fcb9847b3fa289a42b14b9f5e30c6faec50ef3c7adbc6c2a246926e5858136bb8b10c035a3fcaa6afbeed2
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^20.6.2":
+  version: 20.6.2
+  resolution: "@types/node@npm:20.6.2"
+  checksum: 96fe5303872640a173f3fd43e289a451776ed5b8f0090094447c6790b43f23fb607eea8268af0829cef4d132e5afa0bfa4cd871aa7412e9042a414a698e9e971
   languageName: node
   linkType: hard
 
@@ -1066,7 +1073,7 @@ __metadata:
     "@sapphire/utilities": ^3.12.0
     "@skyra/env-utilities": ^1.2.1
     "@skyra/http-framework": ^1.0.3
-    "@types/node": ^20.4.1
+    "@types/node": ^20.6.2
     "@types/ws": ^8.5.5
     colorette: ^2.0.20
     discord.js: ^14.11.0
